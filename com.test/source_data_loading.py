@@ -29,7 +29,7 @@ if __name__ == '__main__':
     src_lst = app_conf["source_list"]
     for src in src_lst:
         src_config = app_conf[src]
-        stg_path = "s3a://" + app_conf["s3"]["staging_location"] + src
+        stg_path = "s3a://spark-faisal-spark/staging"+ src
         if src == "SB":
             txnDF = mysql_data_load(spark, app_secret, src_config) \
                 .withColumn("ins_dt", current_date())
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                 .withColumn("ins_dt", current_date())
 
             olTxnDF.show(5, False)
-            olTxnDF.write.mode("overwrite").partitionBy("ins_dt").parquet()
+            olTxnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
         elif src == "CP":
             studentsDF = mongodb_data_load(spark, app_conf["mongodb_config"]["database"],
@@ -52,7 +52,7 @@ if __name__ == '__main__':
                 .withColumn("ins_dt", current_date())
 
             studentsDF.show(5, False)
-            studentsDF.write.mode("overwrite").partitionBy("ins_dt").parquet()
+            studentsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
         elif src == "ADDR":
             s3_file_path = "s3://" + app_conf["s3_conf"]["s3_bucket"] + "/KC_Extract_1_20171009.csv"
@@ -60,7 +60,7 @@ if __name__ == '__main__':
                 .withColumn("ins_dt", current_date())
 
             campaignsDF.show(5, False)
-            campaignsDF.write.mode("overwrite").partitionBy("ins_dt").parquet()
+            campaignsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
 # spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15"
 # dataframe/com.test/others/systems/mysql_df.py
