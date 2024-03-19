@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_date
-from utils.aws_utils import *
+from aws_utils import *
 import yaml
 import os
 
