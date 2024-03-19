@@ -43,7 +43,7 @@ def sftp_data_load(spark, app_secret, file_path, pem_file_path):
     return ol_txn_df
 
 
-def mongodb_data_load(spark, db_name, coll_name):
+def mongodb_data_load(spark, db_name, coll_name, mongodb_conf):
     print("\nReading data from MongoDB using SparkSession.read.format().")
     # MongoDB source
     students_df = spark \
@@ -51,6 +51,7 @@ def mongodb_data_load(spark, db_name, coll_name):
         .format("com.mongodb.spark.sql.DefaultSource") \
         .option("database", db_name) \
         .option("collection", coll_name) \
+        .option("uri", mongodb_conf["mongodb_config"]["uri"])\
         .load()
 
     return students_df
