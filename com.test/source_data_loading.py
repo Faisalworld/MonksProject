@@ -64,3 +64,5 @@ if __name__ == '__main__':
 
 # spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15"
 # dataframe/com.test/others/systems/mysql_df.py
+
+# spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15,com.springml:spark-sftp_2.11:1.1.5,org.apache.hadoop:hadoop-aws:2.7.4,org.mongodb.spark:mongo-spark-connector_2.11:2.4.1" com.test/source_data_loading.py
