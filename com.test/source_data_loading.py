@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_date
-from aws_utils import *
+from utils.aws_utils import *
 import yaml
 import os
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     src_lst = app_conf["source_list"]
     for src in src_lst:
         src_config = app_conf[src]
-        stg_path = "s3a://spark-faisal-spark/staging" + src
+        stg_path = "s3a://spark-faisal-spark/staging"+ src
         if src == "SB":
             txnDF = mysql_data_load(spark, app_secret, src_config) \
                 .withColumn("ins_dt", current_date())
@@ -38,7 +38,7 @@ if __name__ == '__main__':
             txnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
         elif src == "OL":
-            pem_path = os.path.abspath(current_dir + "/../" + app_secret["sftp_conf"]["pem"])
+            pem_path = os.path.abspath(current_dir + "/../../../../" + app_secret["sftp_conf"]["pem"])
             file_path = src_config["sftp_conf"]["directory"] + "/receipts_delta_GBR_14_10_2017.csv"
             olTxnDF = sftp_data_load(spark, app_secret, file_path, pem_path) \
                 .withColumn("ins_dt", current_date())
@@ -64,6 +64,3 @@ if __name__ == '__main__':
 
 # spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15"
 # dataframe/com.test/others/systems/mysql_df.py
-
-
-# spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15,com.springml:spark-sftp_2.11:1.1.1,org.apache.hadoop:hadoop-aws:2.7.4,org.mongodb.spark:mongo-spark-connector_2.11:2.4.1" com.test/source_data_loading.py
