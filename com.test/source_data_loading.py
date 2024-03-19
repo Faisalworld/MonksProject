@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
         elif src == "CP":
             studentsDF = mongodb_data_load(spark, src_config["mongodb_config"]["database"],
-                                           src_config["mongodb_config"]["collection"], app_secret) \
+                                           src_config["mongodb_config"]["collection"]) \
                 .withColumn("ins_dt", current_date())
 
             studentsDF.show(5, False)
