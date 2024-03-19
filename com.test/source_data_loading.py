@@ -47,7 +47,7 @@ if __name__ == '__main__':
             olTxnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
         elif src == "ADDR":
-            s3_file_path = "s3://" + app_conf["s3_conf"]["s3_bucket"] + "/KC_Extract_1_20171009.csv"
+            s3_file_path = "s3://" + src_config["s3_conf"]["s3_bucket"] + "/KC_Extract_1_20171009.csv"
             campaignsDF = s3_data_load(spark, s3_file_path) \
                 .withColumn("ins_dt", current_date())
 
