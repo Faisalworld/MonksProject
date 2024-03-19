@@ -38,7 +38,7 @@ if __name__ == '__main__':
             txnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
         elif src == "OL":
-            pem_path = os.path.abspath(current_dir + "/../../../../" + app_secret["sftp_conf"]["pem"])
+            pem_path = os.path.abspath(current_dir + app_secret["sftp_conf"]["pem"])
             file_path = src_config["sftp_conf"]["directory"] + "/receipts_delta_GBR_14_10_2017.csv"
             olTxnDF = sftp_data_load(spark, app_secret, file_path, pem_path) \
                 .withColumn("ins_dt", current_date())
