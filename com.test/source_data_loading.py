@@ -46,14 +46,6 @@ if __name__ == '__main__':
             olTxnDF.show(5, False)
             olTxnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
-        elif src == "CP":
-            studentsDF = mongodb_data_load(spark, app_conf["mongodb_config"]["database"],
-                                           app_conf["mongodb_config"]["collection"]) \
-                .withColumn("ins_dt", current_date())
-
-            studentsDF.show(5, False)
-            studentsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
-
         elif src == "ADDR":
             s3_file_path = "s3://" + app_conf["s3_conf"]["s3_bucket"] + "/KC_Extract_1_20171009.csv"
             campaignsDF = s3_data_load(spark, s3_file_path) \
@@ -62,7 +54,17 @@ if __name__ == '__main__':
             campaignsDF.show(5, False)
             campaignsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
 
+        elif src == "CP":
+            studentsDF = mongodb_data_load(spark, src_config["mongodb_config"]["database"],
+                                           src_config["mongodb_config"]["collection"]) \
+                .withColumn("ins_dt", current_date())
+
+            studentsDF.show(5, False)
+            studentsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
+
+
+
 # spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15"
 # dataframe/com.test/others/systems/mysql_df.py
 
-# spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15,com.springml:spark-sftp_2.11:1.1.5,org.apache.hadoop:hadoop-aws:2.7.4,org.mongodb.spark:mongo-spark-connector_2.11:2.4.1" com.test/source_data_loading.py
+# spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15,com.springml:spark-sftp_2.11:1.1.1,org.apache.hadoop:hadoop-aws:2.7.4,org.mongodb.spark:mongo-spark-connector_2.11:2.4.1" com.test/source_data_loading.py
