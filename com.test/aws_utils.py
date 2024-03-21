@@ -52,7 +52,7 @@ def mongodb_data_load(spark, db_name, coll_name):
         .option("database", db_name) \
         .option("collection", coll_name) \
         .load()
-        # .option("uri", "mongodb://ec2-54-155-250-235.eu-west-1.compute.amazonaws.com:27071")\
+        # .option("uri", "mongodb://ec2-54-155-250-235.eu-west-1.compute.amazonaws.com:27017")\
 
 
     return students_df

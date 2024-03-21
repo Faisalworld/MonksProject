@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import current_date
+from pyspark.sql.functions import current_date, col
 from aws_utils import *
 import yaml
 import os
@@ -30,13 +30,16 @@ if __name__ == '__main__':
     src_lst = app_conf["source_list"]
     for src in src_lst:
         src_config = app_conf[src]
-        stg_path = "s3a://spark-faisal-spark/staging"+ src
+        stg_path = "s3a://spark-faisal-spark/staging" + src
         if src == "SB":
             txnDF = mysql_data_load(spark, app_secret, src_config) \
                 .withColumn("ins_dt", current_date())
 
             txnDF.show(5, False)
+
+            print("Writing data to S3   >>>>>>>>")
             txnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
+            print("Writing completed    <<<<<<<<")
 
         elif src == "OL":
             pem_path = os.path.abspath(current_dir + "/../" + app_secret["sftp_conf"]["pem"])
@@ -45,7 +48,10 @@ if __name__ == '__main__':
                 .withColumn("ins_dt", current_date())
 
             olTxnDF.show(5, False)
+
+            print("Writing data to S3   >>>>>>>>")
             olTxnDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
+            print("Writing completed    <<<<<<<<")
 
         elif src == "ADDR":
             s3_file_path = "s3://" + src_config["s3_conf"]["s3_bucket"] + "/KC_Extract_1_20171009.csv"
@@ -53,17 +59,25 @@ if __name__ == '__main__':
                 .withColumn("ins_dt", current_date())
 
             campaignsDF.show(5, False)
+
+            print("Writing data to S3   >>>>>>>>")
             campaignsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
+            print("Writing completed    <<<<<<<<")
 
         elif src == "CP":
-            studentsDF = mongodb_data_load(spark, src_config["mongodb_config"]["database"],
-                                           src_config["mongodb_config"]["collection"]) \
-                .withColumn("ins_dt", current_date())
+            addressDF = mongodb_data_load(spark, src_config["mongodb_config"]["database"],
+                                          src_config["mongodb_config"]["collection"]) \
+                .withColumn("ins_dt", current_date())\
+                .withColumn("street", col("address.street"))\
+                .withColumn("city", col("address.city"))\
+                .withColumn("state", col("address.state"))\
+                .drop("_id", "address")
 
-            studentsDF.show(5, False)
-            studentsDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
+            addressDF.show(5, False)
 
-
+            print("Writing data to S3   >>>>>>>>")
+            addressDF.write.mode("overwrite").partitionBy("ins_dt").parquet(stg_path)
+            print("Writing completed    <<<<<<<<")
 
 # spark-submit --master yarn --packages "mysql:mysql-connector-java:8.0.15"
 # dataframe/com.test/others/systems/mysql_df.py

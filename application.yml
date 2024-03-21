@@ -17,8 +17,8 @@ OL:
 
 CP:
   mongodb_config:
-    database: school
-    collection: students
+    database: addr
+    collection: address
 
 ADDR:
   s3_conf:
