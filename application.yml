@@ -1,8 +1,8 @@
 source_list:
-  - SB
-  - OL
+#  - SB
+#  - OL
   - ADDR
-  - CP
+#  - CP
 
 SB:
   mysql_conf:
@@ -15,15 +15,19 @@ OL:
     delimiter: |
     directory: /home/ubuntu/data
 
-CP:
+ADDR:
   mongodb_config:
     database: addr
     collection: address
 
-ADDR:
+CP:
   s3_conf:
     s3_bucket: spark-faisal-spark
     staging_location: staging
+
+s3_conf:
+  s3_bucket: spark-faisal-spark
+  staging_location: staging
 
 redshift_conf:
   filetype: csv
