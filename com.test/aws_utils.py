@@ -63,6 +63,8 @@ def s3_data_load(spark, file_path):
     # S3 source
     campaigns_df = spark \
         .read \
+        .option("header", True)\
+        .option("delimiter", "|")\
         .csv(file_path)
 
     return campaigns_df
