@@ -1,8 +1,8 @@
 source_list:
-#  - SB
-  - OL
-#  - ADDR
-#  - CP
+  - SB
+#  - OL
+  - ADDR
+  - CP
 
 SB:
   mysql_conf:
