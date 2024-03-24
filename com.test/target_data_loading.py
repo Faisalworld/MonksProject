@@ -39,11 +39,6 @@ if __name__ == '__main__':
 
                 src_df = ut.read_parquet_from_s3(spark, file_path)
                 src_df.show()
-                if src == 'ADDR':
-                    src_df = src_df.withColumn("street", col("address.street")) \
-                        .withColumn("city", col("address.city")) \
-                        .withColumn("state", col("address.state")) \
-                        .drop("address")
 
                 src_df.createOrReplaceTempView(src)
                 src_df.printSchema()
