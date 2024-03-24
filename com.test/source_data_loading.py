@@ -34,7 +34,7 @@ if __name__ == '__main__':
     src_lst = app_conf["source_list"]
     for src in src_lst:
         src_config = app_conf[src]
-        stg_path = "s3a://spark-faisal-spark/staging" + src
+        stg_path = "s3a://spark-faisal-spark/staging/" + src
         if src == "SB":
             txnDF = mysql_data_load(spark, app_secret, src_config) \
                 .withColumn("ins_dt", current_date())
