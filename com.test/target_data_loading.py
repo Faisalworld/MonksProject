@@ -35,7 +35,7 @@ if __name__ == '__main__':
         if tgt == 'REGIS_DIM':
             print('Loading the source data,')
             for src in tgt_conf['source_data']:
-                file_path = "s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/" + app_conf["s3_conf"]["staging_dir"] + "/" + src
+                file_path = "s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/" + app_conf["s3_conf"]["staging_location"] + "/" + src
 
                 src_df = ut.read_parquet_from_s3(spark, file_path)
                 src_df.show()
