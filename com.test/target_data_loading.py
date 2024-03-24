@@ -35,8 +35,7 @@ if __name__ == '__main__':
         if tgt == 'REGIS_DIM':
             print('Loading the source data,')
             for src in tgt_conf['source_data']:
-                file_path = "s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/" + app_conf["s3_conf"][
-                    "staging_dir"] + "/" + src
+                file_path = "s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/" + app_conf["s3_conf"]["staging_dir"] + "/" + src
 
                 src_df = ut.read_parquet_from_s3(spark, file_path)
                 src_df.show()
@@ -63,7 +62,7 @@ if __name__ == '__main__':
             print("Completed   <<<<<<<<<")
 
 
-#
+
 # spark-submit --packages "io.github.spark-redshift-community:spark-redshift_2.11:4.0.1,org.apache.spark:spark-avro_2.11:2.4.2,org.apache.hadoop:hadoop-aws:2.7.4"\
 #   --jars "/usr/share/aws/redshift/jdbc/RedshiftJDBC.jar,/usr/share/aws/redshift/spark-redshift/lib/spark-redshift.jar,/usr/share/aws/redshift/spark-redshift/lib/spark-avro.jar,/usr/share/aws/redshift/spark-redshift/lib/minimal-json.jar" \
-#   MonksProject/com.test/target_data_loading.py
+#   com.test/target_data_loading.py
