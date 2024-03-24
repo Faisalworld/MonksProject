@@ -5,6 +5,7 @@ def get_redshift_jdbc_url(redshift_config: dict):
     username = redshift_config["redshift_conf"]["username"]
     password = redshift_config["redshift_conf"]["password"]
     return "jdbc:redshift://{}:{}/{}?user={}&password={}".format(host, port, database, username, password)
+    # url = "jdbc:redshift://myredshiftcluster.590183684400.eu-west-1.redshift-serverless.amazonaws.com:5439/dev?user=admin&password=Admin1234"
 
 
 def get_mysql_jdbc_url(mysql_config: dict):
@@ -61,8 +62,7 @@ def mongodb_data_load(spark, db_name, coll_name):
         .option("database", db_name) \
         .option("collection", coll_name) \
         .load()
-        # .option("uri", "mongodb://ec2-54-155-250-235.eu-west-1.compute.amazonaws.com:27017")\
-
+    # .option("uri", "mongodb://ec2-54-155-250-235.eu-west-1.compute.amazonaws.com:27017")\
 
     return students_df
 
@@ -72,8 +72,26 @@ def s3_data_load(spark, file_path):
     # S3 source
     campaigns_df = spark \
         .read \
-        .option("header", True)\
-        .option("delimiter", "|")\
+        .option("header", True) \
+        .option("delimiter", "|") \
         .csv(file_path)
 
     return campaigns_df
+
+
+def read_parquet_from_s3(spark, file_path):
+    return spark.read \
+        .option("header", "true") \
+        .option("delimiter", "|") \
+        .parquet(file_path)
+
+
+def write_data_to_redshift(txn_df, jdbc_url, s3_path, redshift_table_name):
+    txn_df.coalesce(1).write \
+        .format("io.github.spark_redshift_community.spark.redshift") \
+        .option("url", jdbc_url) \
+        .option("tempdir", s3_path) \
+        .option("forward_spark_s3_credentials", "true") \
+        .option("dbtable", redshift_table_name) \
+        .mode("overwrite") \
+        .save()
